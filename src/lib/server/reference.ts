@@ -60,11 +60,31 @@ async function fromFinnhub(ticker: string): Promise<Reference | null> {
   };
 }
 
+// Pyth のフィード一覧はキーなしで取れ、market_hours.is_open（米国市場が開いているか）を含む
+const hoursCache = memo<boolean | null>(5 * 60 * 1000);
+function marketOpen(ticker: string): Promise<boolean | null> {
+  return hoursCache(ticker, async () => {
+    try {
+      const feeds = (await (
+        await fetch(`https://hermes.pyth.network/v2/price_feeds?query=${encodeURIComponent(ticker)}&asset_type=equity`, {
+          cache: "no-store",
+        })
+      ).json()) as any[];
+      const f = feeds.find((x) => String(x.attributes?.display_symbol ?? "").toUpperCase() === ticker);
+      return typeof f?.market_hours?.is_open === "boolean" ? f.market_hours.is_open : null;
+    } catch {
+      return null;
+    }
+  });
+}
+
 export function referencePrice(ticker: string): Promise<Reference | null> {
   return cache(ticker, async () => {
+    const open = await marketOpen(ticker);
     for (const f of [fromPyth, fromFinnhub]) {
       try {
         const r = await f(ticker);
+        if (r && open === false) return { ...r, stale: true, label: `${r.label} · market closed` };
         if (r) return r;
       } catch (e) {
         console.error(`[reference] ${ticker}:`, e); // 次の取得元へ

@@ -22,14 +22,20 @@ export default function CurveChart({ r }: { r: CurveResult }) {
   const series = r.series.slice(0, 4); // 4系列まで（2トークン×2取引場所）
   const sizes = r.sizes;
 
-  // y 範囲：極端な外れ値は上端に「↑」で示し、軸はつぶさない
+  // y 範囲。既定は「適正な選択肢に寄せた拡大表示」：危険（基準+10%以上）しかない系列は上端の▲で示す
+  const [focus, setFocus] = useState(true);
   const { yMin, yMax } = useMemo(() => {
     const vals = series.flatMap((s) => s.points.map((p) => p.overpayPct)).filter((v): v is number => v !== null);
+    const lo = Math.min(-0.5, ...(vals.length ? vals : [-0.5]));
+    if (focus) {
+      const fair = vals.filter((v) => v < 10);
+      const hi = Math.max(1, ...(fair.length ? fair : [1]));
+      return { yMin: Math.floor(lo * 2) / 2 - 0.25, yMax: Math.ceil(hi * 1.25 * 2) / 2 };
+    }
     const sane = vals.filter((v) => v < 30);
     const hi = Math.max(3, ...(sane.length ? sane : [3]));
-    const lo = Math.min(-1, ...(vals.length ? vals : [-1]));
     return { yMin: Math.floor(lo) - 0.5, yMax: Math.ceil(hi * 1.15) };
-  }, [series]);
+  }, [series, focus]);
 
   const lx0 = Math.log10(sizes[0]);
   const lx1 = Math.log10(sizes[sizes.length - 1]);
@@ -72,12 +78,22 @@ export default function CurveChart({ r }: { r: CurveResult }) {
               Effective price vs {r.reference ? r.reference.label : "reference"} · lower is better · order size on a log scale
             </p>
           </div>
+          <div className="flex gap-2">
+          {!showTable && (
+            <button
+              onClick={() => setFocus((v) => !v)}
+              className="rounded-md border border-border px-2.5 py-1 text-xs text-ink-2 hover:text-ink"
+            >
+              {focus ? "Show all" : "Zoom to fair range"}
+            </button>
+          )}
           <button
             onClick={() => setShowTable((v) => !v)}
             className="rounded-md border border-border px-2.5 py-1 text-xs text-ink-2 hover:text-ink"
           >
             {showTable ? "Show chart" : "Show table"}
           </button>
+          </div>
         </div>
 
         {/* 凡例（2系列以上なので常に表示。Gateway は破線で二重に区別） */}
@@ -140,7 +156,7 @@ export default function CurveChart({ r }: { r: CurveResult }) {
                       strokeLinejoin="round" strokeLinecap="round"
                       strokeDasharray={s.venue === "Gateway" ? "6 4" : undefined}
                     />
-                    {pts.map((p) =>
+                    {pts.map((p, k) =>
                       p.overpayPct! > yMax ? (
                         // 軸外の外れ値：上端に三角と値
                         <g key={p.amountUsdc}>
@@ -148,9 +164,11 @@ export default function CurveChart({ r }: { r: CurveResult }) {
                             d={`M${x(p.amountUsdc) - 5},${M.t + 9} L${x(p.amountUsdc) + 5},${M.t + 9} L${x(p.amountUsdc)},${M.t + 1} Z`}
                             fill={COLORS[i]} stroke="var(--surface-1)" strokeWidth="2"
                           />
-                          <text x={x(p.amountUsdc) + 8} y={M.t + 10} fontSize="10" fill="var(--text-secondary)" className="num">
-                            {fmtPct(p.overpayPct!)}
-                          </text>
+                          {(k === 0 || pts[k - 1].overpayPct! <= yMax || k === pts.length - 1) && (
+                            <text x={x(p.amountUsdc) + 8} y={M.t + 10} fontSize="10" fill="var(--text-secondary)" className="num">
+                              {fmtPct(p.overpayPct!)}
+                            </text>
+                          )}
                         </g>
                       ) : (
                         <circle
