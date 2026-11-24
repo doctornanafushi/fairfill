@@ -1,0 +1,257 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { CompareResult, CurveResult, QuoteOption, Verdict } from "@/lib/types";
+import CurveChart from "./CurveChart";
+
+type Ticker = { ticker: string; name: string; tokens: string[] };
+
+const PRESETS = [50, 100, 500, 1000, 5000];
+const usd = (n: number, d = 2) =>
+  `$${n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d })}`;
+const pct = (n: number | null) => (n === null ? "—" : `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`);
+
+export default function Terminal() {
+  const [tickers, setTickers] = useState<Ticker[]>([]);
+  const [ticker, setTicker] = useState("AAPL");
+  const [amount, setAmount] = useState(100);
+  const [cmp, setCmp] = useState<CompareResult | null>(null);
+  const [crv, setCrv] = useState<CurveResult | null>(null);
+  const [loading, setLoading] = useState<"idle" | "compare" | "curve">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/tickers")
+      .then((r) => r.json())
+      .then((j) => setTickers(j.tickers ?? []))
+      .catch(() => {});
+  }, []);
+
+  async function run(e?: React.FormEvent) {
+    e?.preventDefault();
+    const t = ticker.trim().toUpperCase();
+    if (!t) return;
+    setError(null);
+    setCmp(null);
+    setCrv(null);
+    setLoading("compare");
+    try {
+      const r = await fetch(`/api/compare?ticker=${encodeURIComponent(t)}&amount=${amount}`);
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error ?? "Request failed");
+      setCmp(j);
+      // 価格曲線は数十回の見積もりが要るので、比較を出してから裏で取る
+      setLoading("curve");
+      const c = await fetch(`/api/curve?ticker=${encodeURIComponent(t)}`);
+      const cj = await c.json();
+      if (c.ok) setCrv(cj);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading("idle");
+    }
+  }
+
+  const known = tickers.find((x) => x.ticker === ticker.trim().toUpperCase());
+
+  return (
+    <div className="space-y-6">
+      {/* 入力 */}
+      <form onSubmit={run} className="rounded-xl border border-border bg-surface-1 p-5">
+        <div className="flex flex-wrap items-end gap-4">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs text-ink-3">Stock</span>
+            <input
+              list="tickers"
+              value={ticker}
+              onChange={(e) => setTicker(e.target.value.toUpperCase())}
+              className="num w-36 rounded-lg border border-border bg-surface-2 px-3 py-2 text-lg outline-none focus:border-accent"
+              placeholder="AAPL"
+              aria-label="Stock ticker"
+            />
+            <datalist id="tickers">
+              {tickers.map((t) => (
+                <option key={t.ticker} value={t.ticker}>
+                  {t.name} — {t.tokens.join(", ")}
+                </option>
+              ))}
+            </datalist>
+          </label>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs text-ink-3">Amount (USDC)</span>
+            <input
+              type="number"
+              min={1}
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              className="num w-36 rounded-lg border border-border bg-surface-2 px-3 py-2 text-lg outline-none focus:border-accent"
+              aria-label="Amount in USDC"
+            />
+          </label>
+          <div className="flex gap-1.5 pb-1">
+            {PRESETS.map((p) => (
+              <button
+                type="button"
+                key={p}
+                onClick={() => setAmount(p)}
+                className={`num rounded-md border px-2.5 py-1 text-xs ${
+                  amount === p ? "border-accent text-ink" : "border-border text-ink-3 hover:text-ink-2"
+                }`}
+              >
+                ${p.toLocaleString("en-US")}
+              </button>
+            ))}
+          </div>
+          <button
+            type="submit"
+            disabled={loading !== "idle"}
+            className="ml-auto rounded-lg bg-accent px-5 py-2.5 font-medium text-white disabled:opacity-50"
+          >
+            {loading === "compare" ? "Comparing…" : "Compare prices"}
+          </button>
+        </div>
+        {known && (
+          <p className="mt-3 text-xs text-ink-3">
+            {known.name} · tokens on Solana: <span className="num text-ink-2">{known.tokens.join(", ")}</span>
+          </p>
+        )}
+      </form>
+
+      {error && (
+        <div role="alert" className="rounded-xl border border-crit/60 bg-crit/10 p-4 text-sm">
+          ⛔ {error}
+        </div>
+      )}
+
+      {loading === "compare" && <Skeleton label="Asking the AMM, Gateway and the price oracle…" />}
+
+      {cmp && <CompareView r={cmp} />}
+
+      {loading === "curve" && <Skeleton label="Sampling quotes at 7 order sizes to draw the price curve…" />}
+      {crv && <CurveChart r={crv} />}
+    </div>
+  );
+}
+
+function Skeleton({ label }: { label: string }) {
+  return (
+    <div className="animate-pulse rounded-xl border border-border bg-surface-1 p-6 text-sm text-ink-3">{label}</div>
+  );
+}
+
+const VERDICT: Record<Verdict, { icon: string; label: string; cls: string }> = {
+  good: { icon: "✓", label: "Fair", cls: "text-good border-good/50" },
+  caution: { icon: "⚠", label: "Caution", cls: "text-warn border-warn/50" },
+  danger: { icon: "⛔", label: "Overpriced", cls: "text-crit border-crit/60" },
+  unknown: { icon: "·", label: "No quote", cls: "text-ink-3 border-border" },
+};
+
+function Badge({ v }: { v: Verdict }) {
+  const s = VERDICT[v];
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs ${s.cls}`}>
+      <span aria-hidden>{s.icon}</span>
+      {s.label}
+    </span>
+  );
+}
+
+function CompareView({ r }: { r: CompareResult }) {
+  const ref = r.reference;
+  const rows = [...r.options].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+  return (
+    <section className="space-y-4">
+      <div className="grid gap-4 md:grid-cols-3">
+        {/* 基準価格 */}
+        <div className="rounded-xl border border-border bg-surface-1 p-5">
+          <p className="text-xs text-ink-3">Reference price · {r.ticker}</p>
+          <p className="num mt-2 text-3xl">{ref ? usd(ref.price) : "—"}</p>
+          <p className="mt-2 text-xs text-ink-3">
+            {ref ? ref.label : "No oracle available"}
+            {ref?.stale && <span className="text-warn"> · stale (market closed?)</span>}
+          </p>
+        </div>
+        {/* 推奨 */}
+        <div className="rounded-xl border border-accent/50 bg-surface-1 p-5 md:col-span-2">
+          <p className="text-xs text-ink-3">Best way to buy {usd(r.amountUsdc, 0)} of {r.ticker}</p>
+          {r.best ? (
+            <>
+              <p className="mt-2 text-2xl">
+                <span className="num">{r.best.token.symbol}</span>
+                <span className="text-ink-3"> via </span>
+                {r.best.venue}
+              </p>
+              <p className="mt-2 text-sm text-ink-2">
+                Effective <span className="num">{usd(r.best.price!)}</span> per token
+                {r.best.overpayPct !== null && <> · <span className="num">{pct(r.best.overpayPct)}</span> vs reference</>}
+                {r.savedVsWorstUsd !== null && r.savedVsWorstUsd > 0.005 && (
+                  <>
+                    {" "}· saves <span className="num text-good">{usd(r.savedVsWorstUsd)}</span> vs the worst option
+                  </>
+                )}
+              </p>
+            </>
+          ) : (
+            <p className="mt-2 text-lg text-crit">⛔ No fair option right now — better not to buy.</p>
+          )}
+        </div>
+      </div>
+
+      {r.warnings.length > 0 && (
+        <ul className="space-y-1.5 rounded-xl border border-warn/40 bg-warn/5 p-4 text-sm text-ink-2">
+          {r.warnings.map((w) => (
+            <li key={w}>⚠ {w}</li>
+          ))}
+        </ul>
+      )}
+
+      {/* 全選択肢 */}
+      <div className="overflow-x-auto rounded-xl border border-border bg-surface-1">
+        <table className="w-full text-sm">
+          <thead className="text-left text-xs text-ink-3">
+            <tr className="border-b border-border">
+              <th className="px-4 py-3 font-normal">Token</th>
+              <th className="px-4 py-3 font-normal">Venue</th>
+              <th className="px-4 py-3 text-right font-normal">You receive</th>
+              <th className="px-4 py-3 text-right font-normal">Effective price</th>
+              <th className="px-4 py-3 text-right font-normal">vs reference</th>
+              <th className="px-4 py-3 font-normal">Verdict</th>
+              <th className="px-4 py-3 font-normal">Route</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((o) => (
+              <Row key={`${o.token.symbol}-${o.venue}`} o={o} best={o === r.best} />
+            ))}
+          </tbody>
+        </table>
+        <p className="border-t border-border px-4 py-2.5 text-xs text-ink-3">
+          Prices include fees. Gateway charges 0.5% and pays network fees. Thresholds: caution ≥ {r.thresholds.warnPct}%, overpriced ≥{" "}
+          {r.thresholds.dangerPct}% above reference. Quotes only — nothing is executed.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function Row({ o, best }: { o: QuoteOption; best: boolean }) {
+  return (
+    <tr className={`border-b border-border/60 last:border-0 ${best ? "bg-accent/5" : ""}`}>
+      <td className="px-4 py-3">
+        <span className="num">{o.token.symbol}</span>
+        <span className="ml-2 text-xs text-ink-3">{o.token.issuer}</span>
+        {best && <span className="ml-2 text-xs text-accent">best</span>}
+      </td>
+      <td className="px-4 py-3">{o.venue}</td>
+      <td className="num px-4 py-3 text-right">{o.qtyOut === null ? "—" : o.qtyOut.toFixed(6)}</td>
+      <td className="num px-4 py-3 text-right">{o.price === null ? "—" : usd(o.price)}</td>
+      <td className="num px-4 py-3 text-right">{pct(o.overpayPct)}</td>
+      <td className="px-4 py-3">
+        <Badge v={o.verdict} />
+      </td>
+      <td className="max-w-56 truncate px-4 py-3 text-xs text-ink-3" title={o.route || o.error}>
+        {o.route || o.error || ""}
+      </td>
+    </tr>
+  );
+}
