@@ -2,6 +2,7 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { createPrivateKey, sign, type KeyObject } from "node:crypto";
 import type { TokenInfo } from "@/lib/types";
+import { getMultipliers } from "./solana";
 import { memo, rateLimiter } from "./util";
 
 const API = "https://api.truemarkets.co";
@@ -99,7 +100,7 @@ export function underlyingTicker(a: { symbol?: string; issuer?: string }): strin
   return s;
 }
 
-export async function solanaStockTokens(): Promise<(TokenInfo & { ticker: string })[]> {
+export async function solanaStockTokens(): Promise<(Omit<TokenInfo, "multiplier"> & { ticker: string })[]> {
   const assets = await getAssets();
   return assets
     .filter((a) => a.chain === "solana" && a.asset_class === "stock" && a.address && a.tradeable !== false)
@@ -114,9 +115,23 @@ export async function solanaStockTokens(): Promise<(TokenInfo & { ticker: string
     }));
 }
 
-export async function tokensForTicker(ticker: string) {
-  const t = ticker.toUpperCase();
-  return (await solanaStockTokens()).filter((x) => x.ticker === t);
+/**
+ * 入力（元の株のティッカー AAPL、またはトークン名 AAPLX / AAPLON）から、
+ * その株を表す Solana 上の全トークンを返す。倍率もオンチェーンから読んで付ける。
+ */
+export async function tokensForTicker(input: string): Promise<{ ticker: string; tokens: TokenInfo[] }> {
+  const q = input.trim().toUpperCase();
+  const all = await solanaStockTokens();
+  const ticker = all.some((x) => x.ticker === q) ? q : all.find((x) => x.symbol.toUpperCase() === q)?.ticker ?? q;
+  const list = all.filter((x) => x.ticker === ticker);
+  const mult = list.length ? await getMultipliers(list.map((x) => x.mint)).catch(() => new Map<string, number>()) : new Map();
+  return {
+    ticker,
+    tokens: list.map((x) => ({
+      symbol: x.symbol, issuer: x.issuer, assetId: x.assetId, mint: x.mint, decimals: x.decimals, name: x.name,
+      multiplier: mult.get(x.mint) ?? 1,
+    })),
+  };
 }
 
 // ---------- 見積もり（注文を作るだけ。execute しないので資金は動かない） ----------

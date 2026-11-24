@@ -18,14 +18,16 @@ export type TokenInfo = {
   mint: string; // Solana のミント
   decimals: number;
   name: string;
+  multiplier: number; // 1トークン = 何株か（Token-2022 ScaledUiAmount。読めなければ 1）
 };
 
 export type QuoteOption = {
   token: TokenInfo;
   venue: Venue;
   amountUsdc: number;
-  qtyOut: number | null; // 受け取れるトークン量
-  price: number | null; // 1トークンあたりの実効価格（手数料込み）
+  qtyOut: number | null; // 受け取れるトークン量（生の数量）
+  shares: number | null; // 株数に換算した量 = qtyOut × multiplier
+  price: number | null; // 1株あたりの実効価格（手数料込み、倍率で換算済み）
   overpayPct: number | null; // 基準価格に対する払いすぎ率
   verdict: Verdict;
   route: string; // Jupiter の経路など
@@ -44,7 +46,7 @@ export type CompareResult = {
   fetchedAt: string;
 };
 
-export type CurvePoint = { amountUsdc: number; price: number | null; overpayPct: number | null };
+export type CurvePoint = { amountUsdc: number; price: number | null; overpayPct: number | null }; // price は1株あたり
 
 // 実効価格 p(Δ) = α + βΔ の当てはめ（CPMM 近似）
 export type LinearFit = {

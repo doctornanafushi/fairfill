@@ -52,7 +52,8 @@ export default function Terminal() {
     }
   }
 
-  const known = tickers.find((x) => x.ticker === ticker.trim().toUpperCase());
+  const q = ticker.trim().toUpperCase();
+  const known = tickers.find((x) => x.ticker === q || x.tokens.some((s) => s.toUpperCase() === q));
 
   return (
     <div className="space-y-6">
@@ -182,7 +183,7 @@ function CompareView({ r }: { r: CompareResult }) {
                 {r.best.venue}
               </p>
               <p className="mt-2 text-sm text-ink-2">
-                Effective <span className="num">{usd(r.best.price!)}</span> per token
+                Effective <span className="num">{usd(r.best.price!)}</span> per share
                 {r.best.overpayPct !== null && <> · <span className="num">{pct(r.best.overpayPct)}</span> vs reference</>}
                 {r.savedVsWorstUsd !== null && r.savedVsWorstUsd > 0.005 && (
                   <>
@@ -213,7 +214,7 @@ function CompareView({ r }: { r: CompareResult }) {
               <th className="px-4 py-3 font-normal">Token</th>
               <th className="px-4 py-3 font-normal">Venue</th>
               <th className="px-4 py-3 text-right font-normal">You receive</th>
-              <th className="px-4 py-3 text-right font-normal">Effective price</th>
+              <th className="px-4 py-3 text-right font-normal">Price / share</th>
               <th className="px-4 py-3 text-right font-normal">vs reference</th>
               <th className="px-4 py-3 font-normal">Verdict</th>
               <th className="px-4 py-3 font-normal">Route</th>
@@ -226,7 +227,8 @@ function CompareView({ r }: { r: CompareResult }) {
           </tbody>
         </table>
         <p className="border-t border-border px-4 py-2.5 text-xs text-ink-3">
-          Prices include fees. Gateway charges 0.5% and pays network fees. Thresholds: caution ≥ {r.thresholds.warnPct}%, overpriced ≥{" "}
+          Prices include fees and are per share: token amounts are converted with the on-chain share multiplier
+          (Token-2022 ScaledUiAmount — dividends reinvested, splits). Gateway charges 0.5% and pays network fees. Thresholds: caution ≥ {r.thresholds.warnPct}%, overpriced ≥{" "}
           {r.thresholds.dangerPct}% above reference. Quotes only — nothing is executed.
         </p>
       </div>
@@ -240,10 +242,20 @@ function Row({ o, best }: { o: QuoteOption; best: boolean }) {
       <td className="px-4 py-3">
         <span className="num">{o.token.symbol}</span>
         <span className="ml-2 text-xs text-ink-3">{o.token.issuer}</span>
+        {Math.abs(o.token.multiplier - 1) > 1e-9 && (
+          <div className="num text-xs text-ink-3" title="Read on-chain from the Token-2022 ScaledUiAmount extension">
+            1 token = {o.token.multiplier.toFixed(4)} sh
+          </div>
+        )}
         {best && <span className="ml-2 text-xs text-accent">best</span>}
       </td>
       <td className="px-4 py-3">{o.venue}</td>
-      <td className="num px-4 py-3 text-right">{o.qtyOut === null ? "—" : o.qtyOut.toFixed(6)}</td>
+      <td className="num px-4 py-3 text-right">
+        {o.qtyOut === null ? "—" : `${o.qtyOut.toFixed(6)} ${o.token.symbol}`}
+        {o.shares !== null && Math.abs(o.token.multiplier - 1) > 1e-9 && (
+          <div className="text-xs text-ink-3">= {o.shares.toFixed(6)} shares</div>
+        )}
+      </td>
       <td className="num px-4 py-3 text-right">{o.price === null ? "—" : usd(o.price)}</td>
       <td className="num px-4 py-3 text-right">{pct(o.overpayPct)}</td>
       <td className="px-4 py-3">

@@ -48,9 +48,8 @@ export function scoreOptions(
 }
 
 export async function compare(ticker: string, amountUsdc: number): Promise<CompareResult> {
-  const T = ticker.toUpperCase();
-  const tokens = await tokensForTicker(T);
-  if (!tokens.length) throw new Error(`No tokenized stock for ${T} on Solana`);
+  const { ticker: T, tokens } = await tokensForTicker(ticker);
+  if (!tokens.length) throw new Error(`No tokenized stock for ${ticker.toUpperCase()} on Solana`);
 
   const venues: Venue[] = ["Jupiter", "Gateway"];
   const [ref, raw] = await Promise.all([
@@ -59,12 +58,14 @@ export async function compare(ticker: string, amountUsdc: number): Promise<Compa
       tokens.flatMap((token) =>
         venues.map(async (venue) => {
           const q = await quoteOne(token, venue, amountUsdc);
+          const shares = q.qtyOut ? q.qtyOut * token.multiplier : null; // 生の数量 × 倍率 = 株数
           return {
             token,
             venue,
             amountUsdc,
             qtyOut: q.qtyOut,
-            price: q.qtyOut ? amountUsdc / q.qtyOut : null,
+            shares,
+            price: shares ? amountUsdc / shares : null, // 1株あたり
             route: q.route,
             error: q.error,
           };

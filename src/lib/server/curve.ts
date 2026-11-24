@@ -45,10 +45,9 @@ export function fitLinear(points: { x: number; y: number }[]): LinearFit | null 
 }
 
 export function curve(ticker: string, sizes = DEFAULT_SIZES): Promise<CurveResult> {
-  const T = ticker.toUpperCase();
-  return cache(`${T}:${sizes.join(",")}`, async () => {
-    const tokens = await tokensForTicker(T);
-    if (!tokens.length) throw new Error(`No tokenized stock for ${T} on Solana`);
+  return cache(`${ticker.toUpperCase()}:${sizes.join(",")}`, async () => {
+    const { ticker: T, tokens } = await tokensForTicker(ticker);
+    if (!tokens.length) throw new Error(`No tokenized stock for ${ticker.toUpperCase()} on Solana`);
     const venues: Venue[] = ["Jupiter", "Gateway"];
 
     const [ref, series] = await Promise.all([
@@ -59,7 +58,8 @@ export function curve(ticker: string, sizes = DEFAULT_SIZES): Promise<CurveResul
             const pts = [];
             for (const amountUsdc of sizes) {
               const q = await quoteOne(token, venue, amountUsdc);
-              pts.push({ amountUsdc, price: q.qtyOut ? amountUsdc / q.qtyOut : null, overpayPct: null as number | null });
+              const shares = q.qtyOut ? q.qtyOut * token.multiplier : null; // 株数に換算
+              pts.push({ amountUsdc, price: shares ? amountUsdc / shares : null, overpayPct: null as number | null });
             }
             return { key: `${token.symbol}·${venue}`, token, venue, points: pts, fit: null };
           }),
