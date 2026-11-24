@@ -43,7 +43,10 @@ async function fromFinnhub(ticker: string): Promise<Reference | null> {
     `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(ticker)}&token=${key}`,
     { cache: "no-store" },
   );
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.error(`[finnhub] ${ticker}: HTTP ${res.status} (check FINNHUB_API_KEY in .env.local)`);
+    return null;
+  }
   const q = (await res.json()) as { c?: number; pc?: number; t?: number };
   const price = Number(q.c) || Number(q.pc);
   if (!price) return null;
@@ -63,8 +66,8 @@ export function referencePrice(ticker: string): Promise<Reference | null> {
       try {
         const r = await f(ticker);
         if (r) return r;
-      } catch {
-        // 次の取得元へ
+      } catch (e) {
+        console.error(`[reference] ${ticker}:`, e); // 次の取得元へ
       }
     }
     return null;

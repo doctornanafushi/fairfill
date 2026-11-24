@@ -144,6 +144,10 @@ export async function gatewayBuyQuote(token: TokenInfo, amountUsdc: number) {
     body: { asset_id: token.assetId, qty: String(amountUsdc), qty_unit: "quote", side: "buy", type: "market" },
   });
   const out = Number(json?.quote?.qty_out);
-  if (!out) return { qtyOut: null, error: `Gateway ${status}` };
+  if (!out) {
+    const msg = json?.message ?? json?.error ?? json?.code ?? (json?.quote?.issues ?? []).join(", ");
+    console.error(`[gateway] quote failed ${token.symbol} $${amountUsdc}: HTTP ${status} ${JSON.stringify(json).slice(0, 300)}`);
+    return { qtyOut: null, error: `Gateway HTTP ${status}${msg ? `: ${msg}` : ""}` };
+  }
   return { qtyOut: out, error: undefined };
 }

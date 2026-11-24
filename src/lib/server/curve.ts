@@ -71,7 +71,7 @@ export function curve(ticker: string, sizes = DEFAULT_SIZES): Promise<CurveResul
     let reference = ref;
     if (!reference) {
       const small = series.map((s) => s.points[0]?.price).filter((p): p is number => !!p);
-      if (small.length) reference = { price: median(small), source: "median", label: "Median of smallest quotes (provisional)", ageSec: null, stale: false };
+      if (small.length >= 3) reference = { price: median(small), source: "median", label: "Median of smallest quotes (provisional)", ageSec: null, stale: false };
     }
 
     for (const s of series) {

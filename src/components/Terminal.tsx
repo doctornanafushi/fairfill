@@ -261,8 +261,8 @@ function Row({ o, best }: { o: QuoteOption; best: boolean }) {
       <td className="px-4 py-3">
         <Badge v={o.verdict} />
       </td>
-      <td className="max-w-56 truncate px-4 py-3 text-xs text-ink-3" title={o.route || o.error}>
-        {o.route || o.error || ""}
+      <td className="max-w-56 truncate px-4 py-3 text-xs text-ink-3" title={o.error ?? o.route}>
+        {o.qtyOut === null ? <span className="text-crit">{o.error ?? "no quote"}</span> : o.route}
       </td>
     </tr>
   );
