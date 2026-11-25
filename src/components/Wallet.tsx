@@ -218,6 +218,11 @@ export function WalletPanel({ w }: { w: ReturnType<typeof useWallet> }) {
           </a>
         )}
       </div>
+      {!me.depositAddress && (
+        <p className="text-xs text-warn">
+          ⚠ Gateway did not return a Solana deposit address for this user yet. Open /api/me to inspect the response.
+        </p>
+      )}
       <p className="text-xs text-ink-3">
         Your Gateway wallet needs two approvals to move funds — FairFill&apos;s signer and True Markets — so neither side can
         move it alone.

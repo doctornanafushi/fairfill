@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
       usdc: bal.usdc,
       balances: bal.list,
       rawBalances: bal.raw,
+      rawUser: user.raw, // デバッグ用（アドレスや ID のみで、秘密情報は含まない）
     });
   } catch (e: any) {
     return Response.json({ error: e?.message ?? "failed" }, { status: 500 });

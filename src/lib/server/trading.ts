@@ -25,7 +25,15 @@ export function ensureUser(walletPk: string): Promise<GatewayUser> {
       }
       const userId = json?.user_id ?? json?.id ?? json?.user?.id;
       if (!userId) throw new Error(`Create user failed: HTTP ${status} ${JSON.stringify(json).slice(0, 200)}`);
-      return { userId, solanaAddress: findSolanaAddress(json), raw: json };
+      let solanaAddress = findSolanaAddress(json);
+      let raw: unknown = json;
+      // 作成時のレスポンスにアドレスがなければ、ユーザーを読み直して探す
+      if (!solanaAddress) {
+        const got = await gatewayFetch(`/v1/account/organizations/${org}/users/${userId}`, {});
+        solanaAddress = findSolanaAddress(got.json);
+        raw = { create: json, get: got.json, getStatus: got.status };
+      }
+      return { userId, solanaAddress, raw };
     }
     throw new Error("Gateway wallets are not ready yet (503). Try again in a moment.");
   });
