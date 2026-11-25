@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { CompareResult, CurveResult, QuoteOption, Verdict } from "@/lib/types";
 import CurveChart from "./CurveChart";
+import { useWallet, WalletPanel } from "./Wallet";
 
 type Ticker = { ticker: string; name: string; tokens: string[] };
 
@@ -19,6 +20,7 @@ export default function Terminal() {
   const [crv, setCrv] = useState<CurveResult | null>(null);
   const [loading, setLoading] = useState<"idle" | "compare" | "curve">("idle");
   const [error, setError] = useState<string | null>(null);
+  const w = useWallet();
 
   useEffect(() => {
     fetch("/api/tickers")
@@ -57,6 +59,7 @@ export default function Terminal() {
 
   return (
     <div className="space-y-6">
+      <WalletPanel w={w} />
       {/* 入力 */}
       <form onSubmit={run} className="rounded-xl border border-border bg-surface-1 p-5">
         <div className="flex flex-wrap items-end gap-4">
@@ -126,7 +129,7 @@ export default function Terminal() {
 
       {loading === "compare" && <Skeleton label="Asking the AMM, Gateway and the price oracle…" />}
 
-      {cmp && <CompareView r={cmp} />}
+      {cmp && <CompareView r={cmp} w={w} />}
 
       {loading === "curve" && <Skeleton label="Sampling quotes at 7 order sizes to draw the price curve…" />}
       {crv && <CurveChart r={crv} />}
@@ -157,7 +160,33 @@ function Badge({ v }: { v: Verdict }) {
   );
 }
 
-function CompareView({ r }: { r: CompareResult }) {
+type BuyState =
+  | { phase: "idle" }
+  | { phase: "confirm"; o: QuoteOption }
+  | { phase: "buying"; o: QuoteOption }
+  | { phase: "done"; o: QuoteOption; orderId: string; status: string; overpayPct: number | null; pricePerShare: number }
+  | { phase: "error"; o: QuoteOption; message: string };
+
+function CompareView({ r, w }: { r: CompareResult; w: ReturnType<typeof useWallet> }) {
+  const [buy, setBuy] = useState<BuyState>({ phase: "idle" });
+
+  async function execute(o: QuoteOption) {
+    setBuy({ phase: "buying", o });
+    try {
+      const res = await fetch("/api/buy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticker: r.ticker, symbol: o.token.symbol, amount: r.amountUsdc }),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error);
+      setBuy({ phase: "done", o, orderId: j.orderId, status: j.status, overpayPct: j.overpayPct, pricePerShare: j.pricePerShare });
+      w.refresh();
+    } catch (e: any) {
+      setBuy({ phase: "error", o, message: e.message });
+    }
+  }
+
   const ref = r.reference;
   const rows = [...r.options].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
   return (
@@ -206,6 +235,8 @@ function CompareView({ r }: { r: CompareResult }) {
         </ul>
       )}
 
+      <BuyPanel buy={buy} r={r} onConfirm={execute} onClose={() => setBuy({ phase: "idle" })} />
+
       {/* 全選択肢 */}
       <div className="overflow-x-auto rounded-xl border border-border bg-surface-1">
         <table className="w-full text-sm">
@@ -218,11 +249,17 @@ function CompareView({ r }: { r: CompareResult }) {
               <th className="px-4 py-3 text-right font-normal">vs reference</th>
               <th className="px-4 py-3 font-normal">Verdict</th>
               <th className="px-4 py-3 font-normal">Route</th>
+              <th className="px-4 py-3 font-normal"></th>
             </tr>
           </thead>
           <tbody>
             {rows.map((o) => (
-              <Row key={`${o.token.symbol}-${o.venue}`} o={o} best={o === r.best} />
+              <Row
+                key={`${o.token.symbol}-${o.venue}`}
+                o={o}
+                best={o === r.best}
+                action={<Action o={o} r={r} w={w} busy={buy.phase === "buying"} onBuy={() => setBuy({ phase: "confirm", o })} />}
+              />
             ))}
           </tbody>
         </table>
@@ -236,7 +273,7 @@ function CompareView({ r }: { r: CompareResult }) {
   );
 }
 
-function Row({ o, best }: { o: QuoteOption; best: boolean }) {
+function Row({ o, best, action }: { o: QuoteOption; best: boolean; action: React.ReactNode }) {
   return (
     <tr className={`border-b border-border/60 last:border-0 ${best ? "bg-accent/5" : ""}`}>
       <td className="px-4 py-3">
@@ -264,6 +301,83 @@ function Row({ o, best }: { o: QuoteOption; best: boolean }) {
       <td className="max-w-56 truncate px-4 py-3 text-xs text-ink-3" title={o.error ?? o.route}>
         {o.qtyOut === null ? <span className="text-crit">{o.error ?? "no quote"}</span> : o.route}
       </td>
+      <td className="px-4 py-3 text-right">{action}</td>
     </tr>
+  );
+}
+
+const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+
+function Action({ o, r, w, busy, onBuy }: { o: QuoteOption; r: CompareResult; w: ReturnType<typeof useWallet>; busy: boolean; onBuy: () => void }) {
+  if (o.price === null) return null;
+  if (o.venue === "Jupiter") {
+    // FairFill が執行するのは Gateway だけ。AMM が最安のときは正直に Jupiter へ案内する
+    return (
+      <a
+        href={`https://jup.ag/swap?sell=${USDC_MINT}&buy=${o.token.mint}`}
+        target="_blank"
+        rel="noreferrer"
+        className="whitespace-nowrap text-xs text-ink-2 underline hover:text-ink"
+      >
+        Open in Jupiter ↗
+      </a>
+    );
+  }
+  const reason = !w.me
+    ? "Connect your wallet first"
+    : o.verdict === "danger"
+      ? "Blocked: far above the reference price"
+      : w.me.usdc < r.amountUsdc
+        ? `Deposit at least ${r.amountUsdc} USDC first`
+        : null;
+  return (
+    <button
+      onClick={onBuy}
+      disabled={!!reason || busy}
+      title={reason ?? "Buy through True Markets Gateway"}
+      className="whitespace-nowrap rounded-md bg-accent px-3 py-1 text-xs text-white disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      Buy
+    </button>
+  );
+}
+
+function BuyPanel({ buy, r, onConfirm, onClose }: { buy: BuyState; r: CompareResult; onConfirm: (o: QuoteOption) => void; onClose: () => void }) {
+  if (buy.phase === "idle") return null;
+  const o = buy.o;
+  return (
+    <div className="rounded-xl border border-accent/50 bg-surface-1 p-4 text-sm" role="status">
+      {buy.phase === "confirm" && (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p>
+            Buy <span className="num">{usd(r.amountUsdc, 2)}</span> of <span className="num">{o.token.symbol}</span> through
+            True Markets Gateway at about <span className="num">{usd(o.price!)}</span> per share
+            {o.overpayPct !== null && <> ({pct(o.overpayPct)} vs reference)</>}? FairFill re-checks the live quote against the
+            reference price right before signing and stops if it moved too far.
+          </p>
+          <div className="flex gap-2">
+            <button onClick={onClose} className="rounded-md border border-border px-3 py-1.5 text-ink-2">Cancel</button>
+            <button onClick={() => onConfirm(o)} className="rounded-md bg-accent px-3 py-1.5 text-white">Confirm purchase</button>
+          </div>
+        </div>
+      )}
+      {buy.phase === "buying" && <p className="animate-pulse text-ink-2">Re-checking the quote, signing and executing on Gateway…</p>}
+      {buy.phase === "done" && (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p>
+            ✓ Order <span className="num text-xs">{buy.orderId}</span> — status <span className="text-good">{buy.status}</span>.
+            Filled at <span className="num">{usd(buy.pricePerShare)}</span> per share
+            {buy.overpayPct !== null && <> ({pct(buy.overpayPct)} vs reference)</>}.
+          </p>
+          <button onClick={onClose} className="rounded-md border border-border px-3 py-1.5 text-ink-2">Close</button>
+        </div>
+      )}
+      {buy.phase === "error" && (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-crit">⛔ {buy.message}</p>
+          <button onClick={onClose} className="rounded-md border border-border px-3 py-1.5 text-ink-2">Close</button>
+        </div>
+      )}
+    </div>
   );
 }

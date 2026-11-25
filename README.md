@@ -27,6 +27,21 @@ Concentrated-liquidity pools behave like a CPMM with virtual reserves inside the
 range, so a drop in R² reveals where the order walks out of the range. Gateway quotes stay
 flat (β ≈ 0), and the intersection of the two lines is the order size above which Gateway wins.
 
+## Buying through Gateway
+
+1. **Sign in with Solana** — the wallet signs a one-time message (no transaction, no fee). The server verifies the
+   ed25519 signature against an HMAC-protected nonce and sets an HTTP-only session cookie.
+2. **One Gateway user per wallet** — the wallet address is the `external_ref_id`, so each user gets their own Gateway
+   Solana wallet (idempotent).
+3. **Deposit** — the server builds an unsigned USDC `transferChecked` transaction; Phantom signs and sends it. The
+   server never touches the user's keys.
+4. **Buy with a last-second guard** — FairFill creates the Gateway order, re-checks the live quote against the
+   oracle price (per share, multiplier-adjusted) and **refuses to sign** if it is ≥ 10% off. In our tests Gateway itself
+   once quoted a $1,000 AAOIx order at $335,879 per share; this guard is what stops that from being executed.
+5. Every wallet transaction needs two approvals — FairFill's signer key and True Markets — so neither can move funds alone.
+
+When the AMM is the cheapest fair option, FairFill links to Jupiter instead of pretending Gateway is better.
+
 ## Run locally
 
 ```bash
@@ -37,6 +52,7 @@ npm run dev                  # http://localhost:3000
 
 ## Notes
 
-- Quotes only — the compare and curve endpoints never execute an order.
+- The compare and curve endpoints only quote; orders are executed only from `/api/buy` after the user confirms.
+- Token amounts are converted to shares with the on-chain Token-2022 `ScaledUiAmount` multiplier (dividends, splits).
 - Gateway charges a flat 0.5% fee and pays network fees; prices shown include fees.
 - Finnhub's free tier is for non-commercial use; production should use a paid oracle (e.g. Pyth Pro).

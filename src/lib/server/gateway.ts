@@ -27,7 +27,7 @@ function loadApiKey() {
 // ---------- 組織トークン（1時間有効・リフレッシュなし → 55分で作り直す） ----------
 let token: { value: string; exp: number } | null = null;
 
-async function getToken(): Promise<string> {
+export async function getToken(): Promise<string> {
   if (token && Date.now() < token.exp) return token.value;
   const { id, key } = loadApiKey();
   const timestamp = Math.floor(Date.now() / 1000);
@@ -150,4 +150,26 @@ export async function gatewayBuyQuote(token: TokenInfo, amountUsdc: number) {
     return { qtyOut: null, error: `Gateway HTTP ${status}${msg ? `: ${msg}` : ""}` };
   }
   return { qtyOut: out, error: undefined };
+}
+
+/** 組織トークン（JWT）のクレームから組織 ID を取り出す。見つからなければ TM_ORG_ID */
+export async function organizationId(): Promise<string> {
+  if (process.env.TM_ORG_ID) return process.env.TM_ORG_ID;
+  const jwt = await getToken();
+  const claims = JSON.parse(Buffer.from(jwt.split(".")[1] ?? "", "base64url").toString() || "{}");
+  const found = findOrgId(claims);
+  if (!found) throw new Error(`Organization id not found in token claims (${Object.keys(claims).join(", ")}). Set TM_ORG_ID.`);
+  return found;
+}
+
+function findOrgId(o: any): string | null {
+  if (!o || typeof o !== "object") return null;
+  for (const [k, v] of Object.entries(o)) {
+    if (/^(org|organization)(_?id)?$/i.test(k) && typeof v === "string") return v;
+  }
+  for (const v of Object.values(o)) {
+    const r = typeof v === "object" ? findOrgId(v) : null;
+    if (r) return r;
+  }
+  return null;
 }
