@@ -38,8 +38,9 @@ function checkNonce(nonce: string): boolean {
 
 export function loginMessage(publicKey: string, nonce: string, issuedAt: string) {
   return [
-    "FairFill wants you to sign in with your Solana account:",
-    publicKey,
+    "Sign in to FairFill",
+    "",
+    `Wallet: ${publicKey}`,
     "",
     "Signing proves you own this wallet. It does not send a transaction or cost any fees.",
     "",

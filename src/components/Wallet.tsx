@@ -70,8 +70,11 @@ export function useWallet() {
       const { nonce, issuedAt } = await (await fetch("/api/auth/nonce")).json();
       // サーバーの loginMessage() と一字一句同じ文面に署名する
       const message = [
-        "FairFill wants you to sign in with your Solana account:",
-        pk,
+        // 「〜 wants you to sign in with your Solana account:」で始めると、Phantom が SIWS 形式として
+        // 厳密に検査し、ドメインなどが足りないと「invalid formatting」で拒否する。普通の文面にする
+        "Sign in to FairFill",
+        "",
+        `Wallet: ${pk}`,
         "",
         "Signing proves you own this wallet. It does not send a transaction or cost any fees.",
         "",

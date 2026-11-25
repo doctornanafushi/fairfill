@@ -148,7 +148,14 @@ export default function CurveChart({ r }: { r: CurveResult }) {
               {/* 系列 */}
               {series.map((s, i) => {
                 const pts = s.points.filter((p) => p.overpayPct !== null);
-                const d = pts.map((p, k) => `${k ? "L" : "M"}${x(p.amountUsdc)},${y(p.overpayPct!)}`).join(" ");
+                // 軸外（上端）の点は線でつながない（上端に張り付いた偽の水平線に見えるため）
+                const d = pts
+                  .map((p, k) => {
+                    if (p.overpayPct! > yMax) return "";
+                    const prevIn = k > 0 && pts[k - 1].overpayPct! <= yMax;
+                    return `${prevIn ? "L" : "M"}${x(p.amountUsdc)},${y(p.overpayPct!)}`;
+                  })
+                  .join(" ");
                 return (
                   <g key={s.key}>
                     <path
