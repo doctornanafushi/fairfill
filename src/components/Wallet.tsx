@@ -10,6 +10,7 @@ type Provider = {
   disconnect(): Promise<void>;
   signMessage(msg: Uint8Array, display?: string): Promise<{ signature: Uint8Array }>;
   signAndSendTransaction(tx: VersionedTransaction): Promise<{ signature: string }>;
+  signTransaction(tx: VersionedTransaction): Promise<VersionedTransaction>;
 };
 const provider = (): Provider | null =>
   (typeof window !== "undefined" && ((window as any).phantom?.solana ?? (window as any).solana)) || null;
@@ -118,8 +119,19 @@ export function useWallet() {
       if (!r.ok) throw new Error(j.error);
       setBusy("Approve the transfer in Phantom…");
       const tx = VersionedTransaction.deserialize(fromB64(j.transaction));
-      const { signature } = await p.signAndSendTransaction(tx);
-      setBusy("Waiting for the deposit to land…");
+      // 署名だけ Phantom に任せ、送信と着地の確認はサーバーが再送しながら行う（混雑時に捨てられないように）
+      const signed = await p.signTransaction(tx);
+      setBusy("Sending to Solana and waiting for confirmation…");
+      const sent = await fetch("/api/deposit/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transaction: toB64(signed.serialize()) }),
+      });
+      const sj = await sent.json();
+      if (!sent.ok || !sj.landed)
+        throw new Error(`The deposit did not land on Solana (${sj.error ?? "unknown"}). No funds moved — please try again.`);
+      const signature: string = sj.signature;
+      setBusy("Confirmed on Solana. Waiting for Gateway to credit it…");
       const before = me?.usdc ?? 0;
       for (let i = 0; i < 20; i++) {
         await new Promise((res) => setTimeout(res, 3000));
