@@ -49,7 +49,8 @@ function findSolanaAddress(o: any): string | null {
     }
     return null;
   }
-  const chain = String(o.chain ?? o.network ?? o.type ?? "").toLowerCase();
+  // 実際のレスポンス: wallets: [{ address, chain_family: "evm" | "solana" }]
+  const chain = String(o.chain_family ?? o.chain ?? o.network ?? o.type ?? "").toLowerCase();
   if (chain.includes("solana") && typeof o.address === "string") return o.address;
   for (const [k, v] of Object.entries(o)) {
     if (/solana/i.test(k) && typeof v === "string" && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v)) return v;
