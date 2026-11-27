@@ -93,17 +93,28 @@ export type BuyResult = {
 };
 
 export async function buyWithGateway(userId: string, token: TokenInfo, ticker: string, amountUsdc: number): Promise<BuyResult> {
-  // 1) 注文を作る（ここで見積もりと未署名ペイロードが返る）
-  const { status, json } = await gatewayFetch("/v1/gateway/orders", {
-    method: "POST",
-    onBehalfOf: userId,
-    body: { asset_id: token.assetId, qty: String(amountUsdc), qty_unit: "quote", side: "buy", type: "market" },
-  });
+  // 1) 注文を作る（ここで見積もりと未署名ペイロードが返る）。503 は一時的なことがあるので数回やり直す
+  let status = 0;
+  let json: any = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    ({ status, json } = await gatewayFetch("/v1/gateway/orders", {
+      method: "POST",
+      onBehalfOf: userId,
+      body: { asset_id: token.assetId, qty: String(amountUsdc), qty_unit: "quote", side: "buy", type: "market" },
+    }));
+    if (status !== 503 && status !== 502) break;
+    console.error(`[buy] create order ${token.symbol} $${amountUsdc}: HTTP ${status} ${JSON.stringify(json).slice(0, 400)} (retrying)`);
+    await sleep(2000);
+  }
   const orderId: string | undefined = json?.order_id || json?.id;
   const quote = json?.quote ?? {};
   if (!orderId) {
+    console.error(`[buy] create order failed ${token.symbol} $${amountUsdc}: HTTP ${status} ${JSON.stringify(json).slice(0, 600)}`);
     const issues = (quote.issues ?? []).join(", ");
-    throw new Error(issues ? `Gateway refused the order: ${issues}` : `Create order failed: HTTP ${status}`);
+    const msg = json?.message ?? json?.code ?? "";
+    throw new Error(
+      issues ? `Gateway refused the order: ${issues}` : `Create order failed: HTTP ${status}${msg ? ` — ${msg}` : ""}`,
+    );
   }
 
   // 2) ガード：この見積もりが基準価格から大きく外れていたら、署名せずに止める
@@ -128,6 +139,7 @@ export async function buyWithGateway(userId: string, token: TokenInfo, ticker: s
     body: { signatures, auth_type: "api_key" },
   });
   if (exec.status >= 400) {
+    console.error(`[buy] execute failed ${orderId}: HTTP ${exec.status} ${JSON.stringify(exec.json).slice(0, 600)}`);
     const code = exec.json?.code ?? exec.json?.message ?? "";
     throw new Error(code === "quote_stale" ? "The quote expired. Please try again." : `Execute failed: HTTP ${exec.status} ${code}`);
   }
