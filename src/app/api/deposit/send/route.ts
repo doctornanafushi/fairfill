@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { unauthorized, walletFrom } from "@/lib/server/auth";
 import { sendAndConfirm } from "@/lib/server/deposit";
 
-export const maxDuration = 90;
+export const maxDuration = 60;
 
 // Phantom で署名済みの入金取引を送信し、ブロックに入るまで再送しながら待つ
 export async function POST(req: NextRequest) {
