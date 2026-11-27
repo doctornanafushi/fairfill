@@ -13,7 +13,8 @@ const PW = W - M.l - M.r;
 const PH = H - M.t - M.b;
 
 const fmtUsd = (n: number) => `$${n.toLocaleString("en-US")}`;
-const fmtPct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(n >= 100 ? 0 : 2)}%`;
+const fmtPct = (n: number) =>
+  `${n >= 0 ? "+" : ""}${Math.abs(n) >= 100 ? Math.round(n).toLocaleString("en-US") : n.toFixed(2)}%`;
 
 export default function CurveChart({ r }: { r: CurveResult }) {
   const [hover, setHover] = useState<number | null>(null);
@@ -44,12 +45,32 @@ export default function CurveChart({ r }: { r: CurveResult }) {
 
   const yTicks = niceTicks(yMin, yMax, 5);
 
-  // 線の右端ラベル：重ならないよう縦にずらす
+  // 全点が軸の上に外れる系列は、グラフの中に描かず上の帯に「範囲外」としてまとめる（三角や数字の重なりを防ぐ）
+  const offChart = useMemo(
+    () =>
+      series
+        .map((s, i) => {
+          const vals = s.points.map((p) => p.overpayPct).filter((v): v is number => v !== null);
+          return vals.length && vals.every((v) => v > yMax)
+            ? { i, key: s.key, min: Math.min(...vals), max: Math.max(...vals) }
+            : null;
+        })
+        .filter((v): v is { i: number; key: string; min: number; max: number } => v !== null),
+    [series, yMax],
+  );
+  const offSet = new Set(offChart.map((o) => o.i));
+  // 一部だけ外れる系列の▲ラベルは、系列ごとに段をずらす
+  const partialRow = new Map<number, number>();
+  series.forEach((s, i) => {
+    if (!offSet.has(i) && s.points.some((p) => p.overpayPct !== null && p.overpayPct > yMax)) partialRow.set(i, partialRow.size);
+  });
+
+  // 線の右端ラベル：重ならないよう縦にずらす（範囲外の系列と、最後の点が範囲外の系列は除く）
   const endLabels = useMemo(() => {
     const items = series
       .map((s, i) => {
         const last = [...s.points].reverse().find((p) => p.overpayPct !== null);
-        return last ? { i, key: s.key, yy: y(last.overpayPct!) } : null;
+        return last && last.overpayPct! <= yMax ? { i, key: s.key, yy: y(last.overpayPct!) } : null;
       })
       .filter((v): v is { i: number; key: string; yy: number } => v !== null)
       .sort((a, b) => a.yy - b.yy);
@@ -116,6 +137,20 @@ export default function CurveChart({ r }: { r: CurveResult }) {
           <DataTable r={r} />
         ) : (
           <div className="relative">
+            {offChart.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-x-5 gap-y-1 rounded-md border border-crit/40 bg-crit/5 px-3 py-2 text-xs text-ink-2">
+                <span className="text-crit">⛔ Off the chart at every size:</span>
+                {offChart.map((o) => (
+                  <span key={o.key} className="inline-flex items-center gap-1.5">
+                    <span className="inline-block h-2 w-2 rounded-full" style={{ background: COLORS[o.i] }} />
+                    <span className="num">{o.key}</span>
+                    <span className="num text-ink-3">
+                      {o.min === o.max ? fmtPct(o.min) : `${fmtPct(o.min)} → ${fmtPct(o.max)}`}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            )}
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Price curve for ${r.ticker}`}>
               {/* グリッドと軸（控えめ） */}
               {yTicks.map((t) => (
@@ -147,6 +182,8 @@ export default function CurveChart({ r }: { r: CurveResult }) {
 
               {/* 系列 */}
               {series.map((s, i) => {
+                if (offSet.has(i)) return null; // 上の帯に表示済み
+                const row = partialRow.get(i) ?? 0;
                 const pts = s.points.filter((p) => p.overpayPct !== null);
                 // 軸外（上端）の点は線でつながない（上端に張り付いた偽の水平線に見えるため）
                 const d = pts
@@ -171,8 +208,8 @@ export default function CurveChart({ r }: { r: CurveResult }) {
                             d={`M${x(p.amountUsdc) - 5},${M.t + 9} L${x(p.amountUsdc) + 5},${M.t + 9} L${x(p.amountUsdc)},${M.t + 1} Z`}
                             fill={COLORS[i]} stroke="var(--surface-1)" strokeWidth="2"
                           />
-                          {(k === 0 || pts[k - 1].overpayPct! <= yMax || k === pts.length - 1) && (
-                            <text x={x(p.amountUsdc) + 8} y={M.t + 10} fontSize="10" fill="var(--text-secondary)" className="num">
+                          {(k === 0 || pts[k - 1].overpayPct! <= yMax) && (
+                            <text x={x(p.amountUsdc) + 8} y={M.t + 10 + row * 12} fontSize="10" fill="var(--text-secondary)" className="num">
                               {fmtPct(p.overpayPct!)}
                             </text>
                           )}

@@ -89,6 +89,9 @@ export function curve(ticker: string, sizes = DEFAULT_SIZES): Promise<CurveResul
     const crossovers: Crossover[] = tokens.map((t) => {
       const j = series.find((s) => s.token.symbol === t.symbol && s.venue === "Jupiter")?.fit;
       const g = series.find((s) => s.token.symbol === t.symbol && s.venue === "Gateway")?.fit;
+      if (!j && g)
+        return { token: t.symbol, breakEvenUsdc: 0, note: "The AMM has no usable liquidity at any size — Gateway is the only fair route" };
+      if (j && !g) return { token: t.symbol, breakEvenUsdc: null, note: "Gateway did not quote this token" };
       if (!j || !g) return { token: t.symbol, breakEvenUsdc: null, note: "Not enough quotes to compare" };
       // 直線 j(Δ)=αj+βjΔ と g(Δ)=αg+βgΔ。g < j の範囲で Gateway が安い
       const maxSize = sizes[sizes.length - 1];
