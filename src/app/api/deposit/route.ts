@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { unauthorized, walletFrom } from "@/lib/server/auth";
+import { restrictedRegion, unauthorized, walletFrom } from "@/lib/server/auth";
 import { buildDepositTx } from "@/lib/server/deposit";
 import { ensureUser } from "@/lib/server/trading";
 
@@ -7,6 +7,8 @@ import { ensureUser } from "@/lib/server/trading";
 export async function POST(req: NextRequest) {
   const wallet = walletFrom(req);
   if (!wallet) return unauthorized();
+  const blocked = restrictedRegion(req);
+  if (blocked) return blocked;
   const { amount } = (await req.json().catch(() => ({}))) as { amount?: number };
   if (!(Number(amount) > 0) || Number(amount) > 10_000)
     return Response.json({ error: "amount must be between 0 and 10,000 USDC" }, { status: 400 });

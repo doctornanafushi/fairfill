@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { unauthorized, walletFrom } from "@/lib/server/auth";
+import { restrictedRegion, unauthorized, walletFrom } from "@/lib/server/auth";
 import { tokensForTicker } from "@/lib/server/gateway";
 import { buyWithGateway, ensureUser } from "@/lib/server/trading";
 
@@ -9,6 +9,8 @@ export const maxDuration = 60;
 export async function POST(req: NextRequest) {
   const wallet = walletFrom(req);
   if (!wallet) return unauthorized();
+  const blocked = restrictedRegion(req);
+  if (blocked) return blocked;
   const body = (await req.json().catch(() => ({}))) as { ticker?: string; symbol?: string; amount?: number };
   const amount = Number(body.amount);
   if (!body.ticker || !body.symbol || !(amount > 0) || amount > 10_000)
