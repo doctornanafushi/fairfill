@@ -14,7 +14,7 @@ const SECRET = () => {
   return s;
 };
 const NONCE_TTL_MS = 5 * 60 * 1000;
-export const SESSION_TTL_SEC = 12 * 60 * 60;
+export const SESSION_TTL_SEC = 7 * 24 * 60 * 60; // 7日
 export const COOKIE = "ff_session";
 
 const mac = (s: string) => createHmac("sha256", SECRET()).update(s).digest("base64url");

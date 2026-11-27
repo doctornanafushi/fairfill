@@ -65,7 +65,7 @@ export function useWallet() {
     setError(null);
     try {
       setBusy("Connecting…");
-      const { publicKey } = await p.connect();
+      let { publicKey } = await p.connect();
       const pk = publicKey.toString();
       setBusy("Sign the message in Phantom…");
       const { nonce, issuedAt } = await (await fetch("/api/auth/nonce")).json();
@@ -82,7 +82,17 @@ export function useWallet() {
         `Nonce: ${nonce}`,
         `Issued At: ${issuedAt}`,
       ].join("\n");
-      const { signature } = await p.signMessage(new TextEncoder().encode(message), "utf8");
+      let signature: Uint8Array;
+      try {
+        ({ signature } = await p.signMessage(new TextEncoder().encode(message), "utf8"));
+      } catch (e: any) {
+        // 4100 = 前回の接続許可が切れている（ロック中・接続アプリから外された等）。接続し直して一度だけ再試行
+        if (e?.code !== 4100) throw e;
+        await p.disconnect().catch(() => {});
+        ({ publicKey } = await p.connect());
+        if (publicKey.toString() !== pk) throw new Error("The connected account changed. Please press Connect again.");
+        ({ signature } = await p.signMessage(new TextEncoder().encode(message), "utf8"));
+      }
       const v = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
