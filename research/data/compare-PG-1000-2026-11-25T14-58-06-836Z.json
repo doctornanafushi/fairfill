@@ -1,0 +1,62 @@
+{
+  "ticker": "PG",
+  "amount_usdc": 1000,
+  "fetched_at": "2026-11-25T14:58:06.836Z",
+  "reference": {
+    "price": 172.96,
+    "conf": 0,
+    "symbol": "Finnhub PG",
+    "ageSec": 25.086999893188477
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "PGON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.169006307,
+      "effective_price": 5916.938945953065,
+      "overpay_pct": 3320.9869021467766,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "PGON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 5.60271535,
+      "effective_price": 178.48488411962603,
+      "overpay_pct": 3.1943132051491796,
+      "verdict": "⚠ 注意",
+      "route": ""
+    },
+    {
+      "token": "PGX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 3.30563789,
+      "effective_price": 302.51347342827074,
+      "overpay_pct": 74.90371960468936,
+      "verdict": "⛔ 危険",
+      "route": "Raydium CLMM"
+    },
+    {
+      "token": "PGX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 5.59760393,
+      "effective_price": 178.6478665702952,
+      "overpay_pct": 3.2885445017895476,
+      "verdict": "⚠ 注意",
+      "route": ""
+    }
+  ],
+  "recommended": {
+    "token": "PGON",
+    "venue": "Gateway",
+    "effective_price": 178.48488411962603
+  }
+}

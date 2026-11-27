@@ -1,0 +1,66 @@
+{
+  "asset": {
+    "id": "c1dea3ee-ef7a-4fe4-a141-fa5baf827d2c",
+    "economic_asset_id": "c5209b97-c9eb-48cd-aa0d-d357cfc45121",
+    "chain": "solana",
+    "address": "MFerpBVGKZh2jXN7cbJdXRXQTp6j6pbSnSZrfWrondo",
+    "symbol": "ABBVON",
+    "name": "AbbVie",
+    "decimals": 9,
+    "slug": "abbvie-ondo-tokenized",
+    "is_active": true,
+    "status": "active",
+    "description": "Tokenized asset from Ondo Finance representing AbbVie (Ondo Tokenized).",
+    "website": "https://app.ondo.finance/",
+    "icon": "https://coin-images.coingecko.com/coins/images/71398/small/abbvon_160x160.png?1767874645",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "ondo",
+    "image": {
+      "thumb": "https://coin-images.coingecko.com/coins/images/71398/thumb/abbvon_160x160.png?1767874645",
+      "small": "https://coin-images.coingecko.com/coins/images/71398/small/abbvon_160x160.png?1767874645",
+      "large": "https://coin-images.coingecko.com/coins/images/71398/large/abbvon_160x160.png?1767874645"
+    },
+    "market_data": {
+      "circulating_supply": 87,
+      "total_supply": 87,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "ondofinance",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 201,
+      "response": {
+        "order_id": "",
+        "status": "",
+        "venue": "defi",
+        "quote": {
+          "base_asset": "MFerpBVGKZh2jXN7cbJdXRXQTp6j6pbSnSZrfWrondo",
+          "quote_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "qty": "100",
+          "qty_out": "0.338715505",
+          "fee": "0",
+          "fee_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "issues": [
+            "Insufficient balance"
+          ]
+        }
+      }
+    }
+  ]
+}

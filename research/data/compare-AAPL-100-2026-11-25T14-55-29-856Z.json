@@ -1,0 +1,57 @@
+{
+  "ticker": "AAPL",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-25T14:55:29.856Z",
+  "reference": null,
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "AAPLON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.255535101,
+      "effective_price": 391.3356701629809,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Meteora DLMM"
+    },
+    {
+      "token": "AAPLON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    },
+    {
+      "token": "AAPLX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.28450634,
+      "effective_price": 351.4860160937011,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Byreal"
+    },
+    {
+      "token": "AAPLX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    }
+  ],
+  "recommended": {
+    "token": "AAPLON",
+    "venue": "Jupiter",
+    "effective_price": 391.3356701629809
+  }
+}

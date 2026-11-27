@@ -1,0 +1,55 @@
+{
+  "asset": {
+    "id": "55ee5084-a06f-4a2c-8f3d-ff0b6b1db8bc",
+    "economic_asset_id": "ff379969-5a66-48c8-aeaf-9e8b27ddcda9",
+    "chain": "solana",
+    "address": "XsvFzSYaLgkoB2iHQiSMhf6e5bVcRThJZvRPiySbhjq",
+    "symbol": "AAONX",
+    "name": "AAON",
+    "decimals": 8,
+    "slug": "aaonx-xstock",
+    "is_active": true,
+    "status": "active",
+    "description": "",
+    "website": "",
+    "icon": "https://assets.truemarkets.co/8a9dc70498b503524c6db19af4bcfebcdcdb132d7d4db819b40409d245e8f9b4.png",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "xstocks",
+    "image": {
+      "thumb": "https://assets.truemarkets.co/d4983a28885b0f1aa33c0ea30e69b3717c739a77d14f968fe118fd6debfd2c37.png",
+      "small": "https://assets.truemarkets.co/8a9dc70498b503524c6db19af4bcfebcdcdb132d7d4db819b40409d245e8f9b4.png",
+      "large": "https://assets.truemarkets.co/56ed8b8da29c15a6346499a310136ca6b2a56c18151c3c67c2d4a398fb503471.png"
+    },
+    "market_data": {
+      "circulating_supply": 0,
+      "total_supply": 0,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 503,
+      "response": {
+        "type": "unavailable",
+        "message": "service unavailable",
+        "request_id": "320d9c11-3280-9a7b-ac19-5c5c93d4f08e"
+      }
+    }
+  ]
+}

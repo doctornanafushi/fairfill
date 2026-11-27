@@ -1,0 +1,57 @@
+{
+  "ticker": "AAOI",
+  "amount_usdc": 1000,
+  "fetched_at": "2026-11-25T14:55:56.410Z",
+  "reference": null,
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "AAOION",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.548561426,
+      "effective_price": 1822.949906069407,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "AAOION",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    },
+    {
+      "token": "AAOIX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.00299222,
+      "effective_price": 334200.02539920196,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "AAOIX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    }
+  ],
+  "recommended": {
+    "token": "AAOIX",
+    "venue": "Jupiter",
+    "effective_price": 334200.02539920196
+  }
+}

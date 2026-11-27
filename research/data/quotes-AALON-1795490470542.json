@@ -1,0 +1,66 @@
+{
+  "asset": {
+    "id": "d6398e9c-de8e-4ca9-bb15-544dd0c5b3ad",
+    "economic_asset_id": "36e7d1c3-37d8-40ac-8e68-167ad2a9285e",
+    "chain": "solana",
+    "address": "9wYZetvT8J2ptfsRca5gzLBGvcUug38mp9yT3xaondo",
+    "symbol": "AALON",
+    "name": "American Airlines Group",
+    "decimals": 9,
+    "slug": "american-airlines-group-ondo-tokenized-stocks",
+    "is_active": true,
+    "status": "active",
+    "description": "Tokenized asset from Ondo Finance representing American Airlines Group (Ondo Tokenized).",
+    "website": "https://app.ondo.finance/",
+    "icon": "https://coin-images.coingecko.com/coins/images/71401/small/abton_160x160.png?1767874963",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "ondo",
+    "image": {
+      "thumb": "https://coin-images.coingecko.com/coins/images/71401/thumb/abton_160x160.png?1767874963",
+      "small": "https://coin-images.coingecko.com/coins/images/71401/small/abton_160x160.png?1767874963",
+      "large": "https://coin-images.coingecko.com/coins/images/71401/large/abton_160x160.png?1767874963"
+    },
+    "market_data": {
+      "circulating_supply": 581,
+      "total_supply": 581,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "ondofinance",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 201,
+      "response": {
+        "order_id": "",
+        "status": "",
+        "venue": "defi",
+        "quote": {
+          "base_asset": "9wYZetvT8J2ptfsRca5gzLBGvcUug38mp9yT3xaondo",
+          "quote_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "qty": "100",
+          "qty_out": "7.859235011",
+          "fee": "0",
+          "fee_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "issues": [
+            "Insufficient balance"
+          ]
+        }
+      }
+    }
+  ]
+}

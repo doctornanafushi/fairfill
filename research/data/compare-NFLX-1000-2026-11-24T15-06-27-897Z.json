@@ -1,0 +1,58 @@
+{
+  "ticker": "NFLX",
+  "amount_usdc": 1000,
+  "fetched_at": "2026-11-24T15:06:27.897Z",
+  "reference": {
+    "price": 59.69,
+    "conf": 0,
+    "symbol": "Finnhub NFLX",
+    "ageSec": 29.430000066757202
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "NFLXON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.025136881,
+      "effective_price": 39782.18300034917,
+      "overpay_pct": 66547.98626294048,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "NFLXON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 1.677897919,
+      "effective_price": 595.9838132441238,
+      "overpay_pct": 898.4650917140623,
+      "verdict": "⛔ 危険",
+      "route": ""
+    },
+    {
+      "token": "NFLXX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 1.62874716,
+      "effective_price": 613.968837250344,
+      "overpay_pct": 928.5958070871905,
+      "verdict": "⛔ 危険",
+      "route": "Raydium CLMM"
+    },
+    {
+      "token": "NFLXX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 1.62060343,
+      "effective_price": 617.0541055809069,
+      "overpay_pct": 933.7646265386278,
+      "verdict": "⛔ 危険",
+      "route": ""
+    }
+  ],
+  "recommended": null
+}

@@ -1,0 +1,62 @@
+{
+  "ticker": "AAOI",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-25T14:57:52.604Z",
+  "reference": {
+    "price": 34.58,
+    "conf": 0,
+    "symbol": "Finnhub AAOI",
+    "ageSec": 10.033999919891357
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "AAOION",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.188561426,
+      "effective_price": 530.3311611570015,
+      "overpay_pct": 1433.6355152024335,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "AAOION",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 2.886658892,
+      "effective_price": 34.64212563428849,
+      "overpay_pct": 0.17965770470935727,
+      "verdict": "✓ 良好",
+      "route": ""
+    },
+    {
+      "token": "AAOIX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.00029922,
+      "effective_price": 334202.25920727226,
+      "overpay_pct": 966361.1313107931,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "AAOIX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 2.86468496,
+      "effective_price": 34.90785248511236,
+      "overpay_pct": 0.9480985688616439,
+      "verdict": "✓ 良好",
+      "route": ""
+    }
+  ],
+  "recommended": {
+    "token": "AAOION",
+    "venue": "Gateway",
+    "effective_price": 34.64212563428849
+  }
+}

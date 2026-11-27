@@ -1,0 +1,62 @@
+{
+  "ticker": "LLY",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-24T15:06:14.344Z",
+  "reference": {
+    "price": 1409.47,
+    "conf": 0,
+    "symbol": "Finnhub LLY",
+    "ageSec": 15.176000118255615
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "LLYON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.020342369,
+      "effective_price": 4915.848296724929,
+      "overpay_pct": 248.77282217606114,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "LLYON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 0.07065585,
+      "effective_price": 1415.3109756658507,
+      "overpay_pct": 0.4144093642185043,
+      "verdict": "✓ 良好",
+      "route": ""
+    },
+    {
+      "token": "LLYX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.07028586,
+      "effective_price": 1422.7612780152365,
+      "overpay_pct": 0.9429982912184443,
+      "verdict": "✓ 良好",
+      "route": "Raydium CLMM"
+    },
+    {
+      "token": "LLYX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 0.06998823,
+      "effective_price": 1428.811673048454,
+      "overpay_pct": 1.3722656777692244,
+      "verdict": "✓ 良好",
+      "route": ""
+    }
+  ],
+  "recommended": {
+    "token": "LLYON",
+    "venue": "Gateway",
+    "effective_price": 1415.3109756658507
+  }
+}

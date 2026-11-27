@@ -1,0 +1,62 @@
+{
+  "ticker": "TSM",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-25T14:57:43.385Z",
+  "reference": {
+    "price": 328.71,
+    "conf": 0,
+    "symbol": "Finnhub TSM",
+    "ageSec": 21.164000034332275
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "TSMON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.244372764,
+      "effective_price": 409.21090535277494,
+      "overpay_pct": 24.489947173123717,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "TSMON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 0.300395989,
+      "effective_price": 332.8939255577078,
+      "overpay_pct": 1.272831845002531,
+      "verdict": "✓ 良好",
+      "route": ""
+    },
+    {
+      "token": "TSMX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.17859608,
+      "effective_price": 559.9227037905871,
+      "overpay_pct": 70.33941887700013,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "TSMX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 0.30031044,
+      "effective_price": 332.9887565680367,
+      "overpay_pct": 1.301681289901957,
+      "verdict": "✓ 良好",
+      "route": ""
+    }
+  ],
+  "recommended": {
+    "token": "TSMON",
+    "venue": "Gateway",
+    "effective_price": 332.8939255577078
+  }
+}

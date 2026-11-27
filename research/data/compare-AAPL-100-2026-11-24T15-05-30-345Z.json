@@ -1,0 +1,62 @@
+{
+  "ticker": "AAPL",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-24T15:05:30.345Z",
+  "reference": {
+    "price": 353.77,
+    "conf": 0,
+    "symbol": "Finnhub AAPL",
+    "ageSec": 16.592999935150146
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "AAPLON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.255535101,
+      "effective_price": 391.3356701629809,
+      "overpay_pct": 10.618670368595673,
+      "verdict": "⛔ 危険",
+      "route": "Meteora DLMM"
+    },
+    {
+      "token": "AAPLON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 0.281329058,
+      "effective_price": 355.45563871329637,
+      "overpay_pct": 0.47647870460931774,
+      "verdict": "✓ 良好",
+      "route": ""
+    },
+    {
+      "token": "AAPLX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.28181884,
+      "effective_price": 354.83788095927156,
+      "overpay_pct": 0.30185740997585864,
+      "verdict": "✓ 良好",
+      "route": "Hadron"
+    },
+    {
+      "token": "AAPLX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 0.28048388,
+      "effective_price": 356.5267280244412,
+      "overpay_pct": 0.7792430179046184,
+      "verdict": "✓ 良好",
+      "route": ""
+    }
+  ],
+  "recommended": {
+    "token": "AAPLX",
+    "venue": "Jupiter",
+    "effective_price": 354.83788095927156
+  }
+}

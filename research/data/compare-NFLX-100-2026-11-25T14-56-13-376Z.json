@@ -1,0 +1,57 @@
+{
+  "ticker": "NFLX",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-25T14:56:13.376Z",
+  "reference": null,
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "NFLXON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.025135312,
+      "effective_price": 3978.466628940194,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "NFLXON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    },
+    {
+      "token": "NFLXX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.17119151,
+      "effective_price": 584.1411177458508,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Raydium CLMM"
+    },
+    {
+      "token": "NFLXX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    }
+  ],
+  "recommended": {
+    "token": "NFLXON",
+    "venue": "Jupiter",
+    "effective_price": 3978.466628940194
+  }
+}

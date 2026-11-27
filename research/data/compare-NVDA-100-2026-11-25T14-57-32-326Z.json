@@ -1,0 +1,62 @@
+{
+  "ticker": "NVDA",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-25T14:57:32.326Z",
+  "reference": {
+    "price": 144.49,
+    "conf": 0,
+    "symbol": "Finnhub NVDA",
+    "ageSec": 12.063999891281128
+  },
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "NVDAon",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.453479535,
+      "effective_price": 220.51711771293054,
+      "overpay_pct": 52.617563646571064,
+      "verdict": "⛔ 危険",
+      "route": "Manifest"
+    },
+    {
+      "token": "NVDAon",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": 0.689654254,
+      "effective_price": 145.00019309675713,
+      "overpay_pct": 0.35309924337816323,
+      "verdict": "✓ 良好",
+      "route": ""
+    },
+    {
+      "token": "NVDAX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.69067163,
+      "effective_price": 144.78660430862058,
+      "overpay_pct": 0.20527670331551562,
+      "verdict": "✓ 良好",
+      "route": "GoonFi V2"
+    },
+    {
+      "token": "NVDAX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": 0.68728874,
+      "effective_price": 145.49925552395928,
+      "overpay_pct": 0.6984950681426128,
+      "verdict": "✓ 良好",
+      "route": ""
+    }
+  ],
+  "recommended": {
+    "token": "NVDAX",
+    "venue": "Jupiter",
+    "effective_price": 144.78660430862058
+  }
+}

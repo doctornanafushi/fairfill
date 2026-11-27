@@ -1,0 +1,57 @@
+{
+  "ticker": "PG",
+  "amount_usdc": 100,
+  "fetched_at": "2026-11-25T14:55:58.920Z",
+  "reference": null,
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "PGON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.128097216,
+      "effective_price": 780.6570909394314,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "PGON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    },
+    {
+      "token": "PGX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.5548781,
+      "effective_price": 180.21976358410973,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Raydium CLMM"
+    },
+    {
+      "token": "PGX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    }
+  ],
+  "recommended": {
+    "token": "PGON",
+    "venue": "Jupiter",
+    "effective_price": 780.6570909394314
+  }
+}

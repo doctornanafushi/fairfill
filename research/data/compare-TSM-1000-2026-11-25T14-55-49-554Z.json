@@ -1,0 +1,57 @@
+{
+  "ticker": "TSM",
+  "amount_usdc": 1000,
+  "fetched_at": "2026-11-25T14:55:49.554Z",
+  "reference": null,
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "TSMON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.836940916,
+      "effective_price": 1194.8274733410215,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "TSMON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    },
+    {
+      "token": "TSMX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 1.39935955,
+      "effective_price": 714.6126240393329,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "TSMX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    }
+  ],
+  "recommended": {
+    "token": "TSMON",
+    "venue": "Jupiter",
+    "effective_price": 1194.8274733410215
+  }
+}

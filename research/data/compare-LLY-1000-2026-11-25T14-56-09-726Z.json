@@ -1,0 +1,57 @@
+{
+  "ticker": "LLY",
+  "amount_usdc": 1000,
+  "fetched_at": "2026-11-25T14:56:09.726Z",
+  "reference": null,
+  "thresholds": {
+    "warn_pct": 2,
+    "danger_pct": 10
+  },
+  "options": [
+    {
+      "token": "LLYON",
+      "issuer": "ondo",
+      "venue": "Jupiter",
+      "qty_out": 0.093917359,
+      "effective_price": 10647.658863576007,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "LLYON",
+      "issuer": "ondo",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    },
+    {
+      "token": "LLYX",
+      "issuer": "xstocks",
+      "venue": "Jupiter",
+      "qty_out": 0.02408066,
+      "effective_price": 41527.101001384515,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "Manifest"
+    },
+    {
+      "token": "LLYX",
+      "issuer": "xstocks",
+      "venue": "Gateway",
+      "qty_out": null,
+      "effective_price": null,
+      "overpay_pct": null,
+      "verdict": "—",
+      "route": "省略"
+    }
+  ],
+  "recommended": {
+    "token": "LLYX",
+    "venue": "Jupiter",
+    "effective_price": 41527.101001384515
+  }
+}

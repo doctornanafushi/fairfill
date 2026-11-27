@@ -1,0 +1,66 @@
+{
+  "asset": {
+    "id": "3606ef48-c3b9-4d8b-bc6a-14e128e26e1d",
+    "economic_asset_id": "482b3c6e-5461-4d98-8997-d50710f332db",
+    "chain": "solana",
+    "address": "XsGHwSbPaUJu6r5dtJLHXkXenPgCQf4Sx2hb4e2sbCZ",
+    "symbol": "AAOIX",
+    "name": "Applied Optoelectronics",
+    "decimals": 8,
+    "slug": "aaoix-xstock",
+    "is_active": true,
+    "status": "active",
+    "description": "",
+    "website": "https://xstocks.fi",
+    "icon": "https://coin-images.coingecko.com/coins/images/102175873/small/AAOIx.png?1787820708",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "xstocks",
+    "image": {
+      "thumb": "https://coin-images.coingecko.com/coins/images/102175873/thumb/AAOIx.png?1787820708",
+      "small": "https://coin-images.coingecko.com/coins/images/102175873/small/AAOIx.png?1787820708",
+      "large": "https://coin-images.coingecko.com/coins/images/102175873/large/AAOIx.png?1787820708"
+    },
+    "market_data": {
+      "circulating_supply": 0,
+      "total_supply": 0,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "https://x.com/xstocksfi",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 201,
+      "response": {
+        "order_id": "",
+        "status": "",
+        "venue": "defi",
+        "quote": {
+          "base_asset": "XsGHwSbPaUJu6r5dtJLHXkXenPgCQf4Sx2hb4e2sbCZ",
+          "quote_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "qty": "100",
+          "qty_out": "2.59696391",
+          "fee": "0.5",
+          "fee_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "issues": [
+            "Insufficient balance"
+          ]
+        }
+      }
+    }
+  ]
+}

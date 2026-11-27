@@ -1,0 +1,55 @@
+{
+  "asset": {
+    "id": "1c24c670-741c-41dc-9fbc-fbc1d722b77d",
+    "economic_asset_id": "e3562c0b-2188-4217-b850-73c4b2b1af0a",
+    "chain": "solana",
+    "address": "XsWsRPQPNCtZj5G5k8bWRdAfd1x55Ct7qkHUiSzXZNH",
+    "symbol": "ABFX",
+    "name": "Associated British Foods",
+    "decimals": 8,
+    "slug": "abfx-xstock",
+    "is_active": true,
+    "status": "active",
+    "description": "",
+    "website": "",
+    "icon": "https://assets.truemarkets.co/ac349d4c0deb2eee5ee7f4f4cf3b81b4ad30053063720e042528483b3fb8762c.png",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "xstocks",
+    "image": {
+      "thumb": "https://assets.truemarkets.co/fe49d1f3b02e61f5b7c7c942518456f085730a69f8e1f8d0d62a5a934701dd2a.png",
+      "small": "https://assets.truemarkets.co/ac349d4c0deb2eee5ee7f4f4cf3b81b4ad30053063720e042528483b3fb8762c.png",
+      "large": "https://assets.truemarkets.co/a32a154087179f9778d699f27a1fd8720412d291cc6c7b8abd33263fca1f8088.png"
+    },
+    "market_data": {
+      "circulating_supply": 0,
+      "total_supply": 0,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 503,
+      "response": {
+        "type": "unavailable",
+        "message": "service unavailable",
+        "request_id": "47c396c1-29ab-931d-b1a6-1299622b9691"
+      }
+    }
+  ]
+}

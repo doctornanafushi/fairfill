@@ -1,0 +1,66 @@
+{
+  "asset": {
+    "id": "e84b0c8c-afa6-431b-927b-bc88f825e1de",
+    "economic_asset_id": "5edddaf0-3649-4812-aca1-3f343466c827",
+    "chain": "solana",
+    "address": "XsrisVGB3qU1p3KGR7fg4JuxHkeCpdPtByJpYLB4pbH",
+    "symbol": "AALX",
+    "name": "American Airlines",
+    "decimals": 8,
+    "slug": "aalx-xstock",
+    "is_active": true,
+    "status": "active",
+    "description": "",
+    "website": "",
+    "icon": "https://assets.truemarkets.co/88bad02aea9a8acffeb2873c0aca294c7eb17374e7c1c888c7bf93bf4b369565.png",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "xstocks",
+    "image": {
+      "thumb": "https://assets.truemarkets.co/3795c42ba6da8975b2b4daa47dadd1706b35bd98a1ded72cf7ab0f95bda89e16.png",
+      "small": "https://assets.truemarkets.co/88bad02aea9a8acffeb2873c0aca294c7eb17374e7c1c888c7bf93bf4b369565.png",
+      "large": "https://assets.truemarkets.co/6c8358de97f2f6c1889692d8dc1185182dcccf8b3c0406c3f5760c2345fc97b6.png"
+    },
+    "market_data": {
+      "circulating_supply": 0,
+      "total_supply": 0,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 201,
+      "response": {
+        "order_id": "",
+        "status": "",
+        "venue": "defi",
+        "quote": {
+          "base_asset": "XsrisVGB3qU1p3KGR7fg4JuxHkeCpdPtByJpYLB4pbH",
+          "quote_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "qty": "100",
+          "qty_out": "7.78681703",
+          "fee": "0.5",
+          "fee_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "issues": [
+            "Insufficient balance"
+          ]
+        }
+      }
+    }
+  ]
+}

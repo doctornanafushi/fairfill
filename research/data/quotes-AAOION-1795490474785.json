@@ -1,0 +1,66 @@
+{
+  "asset": {
+    "id": "1bb754d0-7385-42ed-8030-6e8a2c50b0f5",
+    "economic_asset_id": "3ae25be8-9c9f-41f9-adbe-d0ef0c55b6ba",
+    "chain": "solana",
+    "address": "YuFZvc8JCN3a6BUAqwnbY4AnhuVEXD4V7QnBTmwondo",
+    "symbol": "AAOION",
+    "name": "Applied Optoelectronics",
+    "decimals": 9,
+    "slug": "applied-optoelectronics-ondo-tokenized",
+    "is_active": true,
+    "status": "active",
+    "description": "AAOIon is the Ondo Tokenized version of Applied Optoelectronics Inc, giving tokenholders economic exposure similar to holding AAOI and reinvesting any dividends. Ondo tokenized stocks enable non-US retail and institutional users around the world to instantly mint and redeem tokenized U.S. stocks and ETFs, 24 hours a day, five days a week with full access to traditional exchange liquidity. Additional restrictions apply. Learn more at ondo.finance/global-markets.",
+    "website": "https://app.ondo.finance/",
+    "icon": "https://coin-images.coingecko.com/coins/images/102173752/small/aaoion_160x160.png?1781494202",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "ondo",
+    "image": {
+      "thumb": "https://coin-images.coingecko.com/coins/images/102173752/thumb/aaoion_160x160.png?1781494202",
+      "small": "https://coin-images.coingecko.com/coins/images/102173752/small/aaoion_160x160.png?1781494202",
+      "large": "https://coin-images.coingecko.com/coins/images/102173752/large/aaoion_160x160.png?1781494202"
+    },
+    "market_data": {
+      "circulating_supply": 3968,
+      "total_supply": 3968,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "ondofinance",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 201,
+      "response": {
+        "order_id": "",
+        "status": "",
+        "venue": "defi",
+        "quote": {
+          "base_asset": "YuFZvc8JCN3a6BUAqwnbY4AnhuVEXD4V7QnBTmwondo",
+          "quote_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "qty": "100",
+          "qty_out": "2.612613132",
+          "fee": "0",
+          "fee_asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "issues": [
+            "Insufficient balance"
+          ]
+        }
+      }
+    }
+  ]
+}

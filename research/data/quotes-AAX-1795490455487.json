@@ -1,0 +1,55 @@
+{
+  "asset": {
+    "id": "2809c379-8810-47f6-9156-5749eab006b9",
+    "economic_asset_id": "0062efd7-29ba-4cd4-8aea-a9d312a51997",
+    "chain": "solana",
+    "address": "Xs2XDRGh6AhivmYgaVa8woDGKGccR1WnnGnw9vqSWD9",
+    "symbol": "AAX",
+    "name": "Alcoa",
+    "decimals": 8,
+    "slug": "aax-xstock",
+    "is_active": true,
+    "status": "active",
+    "description": "",
+    "website": "https://xstocks.fi",
+    "icon": "https://coin-images.coingecko.com/coins/images/102175874/small/AAx.png?1787820712",
+    "tradeable": true,
+    "stable": false,
+    "venue": "defi",
+    "type": "spot",
+    "asset_class": "stock",
+    "issuer": "xstocks",
+    "image": {
+      "thumb": "https://coin-images.coingecko.com/coins/images/102175874/thumb/AAx.png?1787820712",
+      "small": "https://coin-images.coingecko.com/coins/images/102175874/small/AAx.png?1787820712",
+      "large": "https://coin-images.coingecko.com/coins/images/102175874/large/AAx.png?1787820712"
+    },
+    "market_data": {
+      "circulating_supply": 0,
+      "total_supply": 0,
+      "max_supply": 0
+    },
+    "socials": {
+      "x_username": "https://x.com/xstocksfi",
+      "facebook_username": "",
+      "subreddit_url": "",
+      "official_forum_url": ""
+    },
+    "networks": [],
+    "order_types": [
+      "market"
+    ]
+  },
+  "user_id": "24d9ab10-88fc-4ae8-82c6-8fc2c41e0921",
+  "results": [
+    {
+      "size_usdc": "100",
+      "status": 503,
+      "response": {
+        "type": "unavailable",
+        "message": "service unavailable",
+        "request_id": "a68a3a3e-d891-997a-b159-ed3de82cff35"
+      }
+    }
+  ]
+}
