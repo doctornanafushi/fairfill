@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { CompareResult, CurveResult, QuoteOption, Verdict } from "@/lib/types";
+import type { CompareResult, CurveResult, ExecutionReport, QuoteOption, Verdict } from "@/lib/types";
 import CurveChart from "./CurveChart";
+import ReportCard from "./ReportCard";
 import { useWallet, WalletPanel } from "./Wallet";
 
 type Ticker = { ticker: string; name: string; tokens: string[] };
@@ -164,7 +165,7 @@ type BuyState =
   | { phase: "idle" }
   | { phase: "confirm"; o: QuoteOption }
   | { phase: "buying"; o: QuoteOption }
-  | { phase: "done"; o: QuoteOption; orderId: string; status: string; overpayPct: number | null; pricePerShare: number }
+  | { phase: "done"; o: QuoteOption; orderId: string; status: string; overpayPct: number | null; pricePerShare: number; report?: ExecutionReport; reportToken?: string }
   | { phase: "error"; o: QuoteOption; message: string };
 
 function CompareView({ r, w }: { r: CompareResult; w: ReturnType<typeof useWallet> }) {
@@ -180,7 +181,16 @@ function CompareView({ r, w }: { r: CompareResult; w: ReturnType<typeof useWalle
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error);
-      setBuy({ phase: "done", o, orderId: j.orderId, status: j.status, overpayPct: j.overpayPct, pricePerShare: j.pricePerShare });
+      setBuy({
+        phase: "done",
+        o,
+        orderId: j.orderId,
+        status: j.status,
+        overpayPct: j.overpayPct,
+        pricePerShare: j.pricePerShare,
+        report: j.report,
+        reportToken: j.reportToken,
+      });
       w.refresh();
     } catch (e: any) {
       setBuy({ phase: "error", o, message: e.message });
@@ -362,7 +372,15 @@ function BuyPanel({ buy, r, onConfirm, onClose }: { buy: BuyState; r: CompareRes
         </div>
       )}
       {buy.phase === "buying" && <p className="animate-pulse text-ink-2">Re-checking the quote, signing and executing on Gateway…</p>}
-      {buy.phase === "done" && (
+      {buy.phase === "done" && buy.report && (
+        <div className="space-y-3">
+          <div className="flex justify-end">
+            <button onClick={onClose} className="rounded-md border border-border px-3 py-1.5 text-ink-2">Close</button>
+          </div>
+          <ReportCard r={buy.report} token={buy.reportToken} />
+        </div>
+      )}
+      {buy.phase === "done" && !buy.report && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p>
             ✓ Order <span className="num text-xs">{buy.orderId}</span> — status <span className="text-good">{buy.status}</span>.

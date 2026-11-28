@@ -80,3 +80,39 @@ export type CurveResult = {
   crossovers: Crossover[];
   fetchedAt: string;
 };
+
+// 最良執行レポート：購入の直前に取った全選択肢のスナップショットと、実際の約定を並べたもの
+export type ReportOption = {
+  symbol: string;
+  issuer: string;
+  venue: Venue;
+  pricePerShare: number | null;
+  overpayPct: number | null;
+  verdict: Verdict;
+  executed: boolean; // 実際に執行した選択肢
+};
+
+export type ExecutionReport = {
+  version: 1;
+  orderId: string;
+  status: string;
+  executedAt: string; // ISO
+  wallet: string;
+  gatewayWallet: string | null;
+  ticker: string;
+  token: { symbol: string; issuer: string; multiplier: number };
+  venue: "Gateway";
+  amountUsdc: number;
+  tokensReceived: number;
+  sharesReceived: number;
+  fillPricePerShare: number;
+  reference: { price: number; label: string; stale: boolean } | null;
+  fillVsReferencePct: number | null;
+  guard: { checked: boolean; thresholdPct: number };
+  options: ReportOption[]; // 執行直前の全選択肢（安い順）
+  worst: { symbol: string; venue: Venue; pricePerShare: number } | null;
+  savedVsWorstUsd: number | null; // 最悪の選択肢で同額を買った場合と比べて得した金額
+  savedVsWorstPct: number | null; // その割合（= 1 − 約定価格 / 最悪の価格）
+  nextBest: { symbol: string; venue: Venue; pricePerShare: number } | null;
+  diffVsNextBestPct: number | null; // 次善の選択肢との差（プラスなら約定の方が安い）
+};

@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import { restrictedRegion, unauthorized, walletFrom } from "@/lib/server/auth";
+import { compare } from "@/lib/server/compare";
 import { tokensForTicker } from "@/lib/server/gateway";
+import { buildReport, signReport } from "@/lib/server/report";
 import { buyWithGateway, ensureUser } from "@/lib/server/trading";
 
 export const maxDuration = 60;
@@ -20,8 +22,20 @@ export async function POST(req: NextRequest) {
     const token = tokens.find((t) => t.symbol === body.symbol);
     if (!token) return Response.json({ error: `${body.symbol} is not a token for ${ticker}` }, { status: 400 });
     const user = await ensureUser(wallet);
+    // 執行の直前に、同じ金額での全選択肢を取っておく（最良執行レポート用）
+    const snapshot = await compare(ticker, amount);
     const result = await buyWithGateway(user.userId, token, ticker, amount);
-    return Response.json(result);
+    const report = buildReport({
+      snapshot,
+      token,
+      orderId: result.orderId,
+      status: result.status,
+      qtyOut: result.qtyOut,
+      pricePerShare: result.pricePerShare,
+      wallet,
+      gatewayWallet: user.solanaAddress,
+    });
+    return Response.json({ ...result, report, reportToken: signReport(report) });
   } catch (e: any) {
     return Response.json({ error: e?.message ?? "failed" }, { status: 400 });
   }
